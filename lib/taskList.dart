@@ -8,8 +8,8 @@ import 'add_task_screen.dart';
 import 'package:http/http.dart' as http;
 
 class TasksList extends StatefulWidget {
-  final bool isPageLoaded = false;
-  TasksList({super.key});
+  final List isPageLoaded;
+  TasksList({super.key, required this.isPageLoaded});
 
   @override
   State<TasksList> createState() => _TasksListState();

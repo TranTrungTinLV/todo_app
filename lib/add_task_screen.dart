@@ -84,19 +84,17 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     final response = await http.post(Uri.parse(request),
         body: jsonEncode(body), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 201) {
-      SuccessMessage('Sucess');
+      SuccessMessage('Sucessfully');
     } else {
-      ErrorMessage('Sucess');
+      ErrorMessage('Error not valid');
     }
-    
   }
 
   void SuccessMessage(String status) {
     final snackbar = SnackBar(
         content: Container(
-            padding: const EdgeInsets.only(bottom: 50),
-            height: 500,
-            width: 100,
+            padding: const EdgeInsets.all(16),
+            height: 50,
             decoration: const BoxDecoration(
                 color: Colors.green,
                 borderRadius: BorderRadius.all(Radius.circular(20))),
@@ -109,9 +107,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   void ErrorMessage(String status) {
     final snackbar = SnackBar(
         content: Container(
-            padding: EdgeInsets.only(bottom: 50),
-            height: 500,
-            width: 500,
+            padding: const EdgeInsets.all(8),
+            height: 90,
             decoration: BoxDecoration(
                 color: Colors.red,
                 borderRadius: BorderRadius.all(Radius.circular(20))),
@@ -181,6 +178,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       if (newTaskContent != ' ' || newTaskTiTile != ' ') {
                         setState(() {
                           isEdit ? updateData() : addData();
+                          Navigator.pop(context);
+                          
                         });
                       }
                     },

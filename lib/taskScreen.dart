@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'taskList.dart';
 import 'add_task_screen.dart';
+import 'package:http/http.dart' as http;
 
 class TaskScreen extends StatefulWidget {
   const TaskScreen({super.key});
@@ -9,11 +12,34 @@ class TaskScreen extends StatefulWidget {
 }
 
 class _TaskScreenState extends State<TaskScreen> {
+  bool isLoading = true;
+  List tasks = [];
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    TasksList();
+    TasksList(
+      isPageLoaded: tasks,
+    );
+    fetch();
+  }
+
+  Future<void> fetch() async {
+    setState(() {
+      isLoading = false;
+    });
+    final response =
+        await http.get(Uri.parse('http://14.161.18.75:7030/todos'));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as Map;
+      final result = data['Todos'] as List;
+      setState(() {
+        tasks = result;
+      });
+      print(data);
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Widget build(BuildContext context) {
@@ -33,7 +59,7 @@ class _TaskScreenState extends State<TaskScreen> {
                           todo: null,
                           callback: () async {
                             setState(() {
-                              TasksList();
+                              TasksList(isPageLoaded: tasks);
                             });
                           }))));
         },
@@ -81,7 +107,9 @@ class _TaskScreenState extends State<TaskScreen> {
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20.0),
                       topRight: Radius.circular(20.0))),
-              child: TasksList(),
+              child: TasksList(
+                isPageLoaded: tasks,
+              ),
             ),
           )
         ],
