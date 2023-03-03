@@ -27,8 +27,6 @@ class _TaskScreenState extends State<TaskScreen> {
     setState(() {
       isLoading = false;
     });
-    print(
-        "tempppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp");
     final response =
         await http.get(Uri.parse('http://14.161.18.75:7030/todos'));
     if (response.statusCode == 200) {

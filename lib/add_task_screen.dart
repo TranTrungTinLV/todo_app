@@ -90,17 +90,21 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   }
 
   void SuccessMessage(String status) {
-    final snackbar = SnackBar(
-        content: Container(
-            padding: const EdgeInsets.all(16),
-            height: 50,
-            decoration: const BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.all(Radius.circular(20))),
-            child: Column(
-              children: [Center(child: Text(status))],
-            )));
-    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+    // try {
+    //   final snackbar = SnackBar(
+    //       content: Container(
+    //           padding: const EdgeInsets.all(16),
+    //           height: 50,
+    //           decoration: const BoxDecoration(
+    //               color: Colors.green,
+    //               borderRadius: BorderRadius.all(Radius.circular(20))),
+    //           child: Column(
+    //             children: [Center(child: Text(status))],
+    //           )));
+    //   ScaffoldMessenger.of(context).showSnackBar(snackbar);
+    // } catch (e) {
+    //   print(e);
+    // }
   }
 
   void ErrorMessage(String status) {

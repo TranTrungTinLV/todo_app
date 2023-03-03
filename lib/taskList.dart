@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -29,24 +30,25 @@ class _TasksListState extends State<TasksList> {
 
   Future<void> _fetch() async {
     setState(() {
-      isLoading = false;
+      isLoading = true;
     });
     final response =
         await http.get(Uri.parse('http://14.161.18.75:7030/todos'));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as Map;
       final result = data['Todos'] as List;
-      setState(() {
-        tasks.clear();
-        tasks.addAll(result.toList());
-      });
+      tasks.clear();
+      tasks.addAll(result.toList());
+      
+      // tasks.clear();
+      // tasks.addAll(result.toList());
     }
     setState(() {
       isLoading = false;
     });
   }
 
-  void updateTask(Map item) {
+  Future<void> updateTask(Map item) async {
     Future<void> modalFuture = showModalBottomSheet<void>(
         context: context,
         isScrollControlled: true,
@@ -56,9 +58,10 @@ class _TasksListState extends State<TasksList> {
                     bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: AddTaskScreen(todo: item))));
     modalFuture.whenComplete(() async {
-      print(
-          "heloooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
       await _fetch();
+      var timer = Timer(const Duration(seconds: 400), () => print('done'));
+      await _fetch();
+      timer.cancel();
     });
   }
 
