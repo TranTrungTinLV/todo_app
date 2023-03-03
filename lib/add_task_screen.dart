@@ -6,8 +6,7 @@ import 'TodoList.dart';
 
 class AddTaskScreen extends StatefulWidget {
   final Map? todo;
-  final Function callback;
-  AddTaskScreen({this.todo, required this.callback});
+  AddTaskScreen({this.todo});
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();
 }
@@ -179,7 +178,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         setState(() {
                           isEdit ? updateData() : addData();
                           Navigator.pop(context);
-                          
                         });
                       }
                     },

@@ -18,7 +18,7 @@ class _TaskScreenState extends State<TaskScreen> {
   void initState() {
     super.initState();
     TasksList(
-      isPageLoaded: tasks,
+      paramTasks: tasks,
     );
     fetch();
   }
@@ -27,6 +27,8 @@ class _TaskScreenState extends State<TaskScreen> {
     setState(() {
       isLoading = false;
     });
+    print(
+        "tempppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp");
     final response =
         await http.get(Uri.parse('http://14.161.18.75:7030/todos'));
     if (response.statusCode == 200) {
@@ -35,10 +37,10 @@ class _TaskScreenState extends State<TaskScreen> {
       setState(() {
         tasks = result;
       });
-      print(data);
+      // print(data);
     }
     setState(() {
-      isLoading = false;
+      isLoading = true;
     });
   }
 
@@ -48,20 +50,22 @@ class _TaskScreenState extends State<TaskScreen> {
         backgroundColor: Colors.orange,
         isExtended: true,
         onPressed: () {
-          showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (context) => SingleChildScrollView(
-                  child: Container(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom),
-                      child: AddTaskScreen(
-                          todo: null,
-                          callback: () async {
-                            setState(() {
-                              TasksList(isPageLoaded: tasks);
-                            });
-                          }))));
+          Future<void> modalFuture = showModalBottomSheet<void>(
+            context: context,
+            builder: (BuildContext context) {
+              return SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom),
+                  child: AddTaskScreen(todo: null),
+                ),
+              );
+            },
+          );
+
+          modalFuture.whenComplete(() async {
+            await fetch();
+          });
         },
         child: const Icon(Icons.add),
       ),
@@ -107,9 +111,11 @@ class _TaskScreenState extends State<TaskScreen> {
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20.0),
                       topRight: Radius.circular(20.0))),
-              child: TasksList(
-                isPageLoaded: tasks,
-              ),
+              child: isLoading
+                  ? TasksList(
+                      paramTasks: tasks,
+                    )
+                  : Container(),
             ),
           )
         ],

@@ -8,8 +8,8 @@ import 'add_task_screen.dart';
 import 'package:http/http.dart' as http;
 
 class TasksList extends StatefulWidget {
-  final List isPageLoaded;
-  TasksList({super.key, required this.isPageLoaded});
+  final List paramTasks;
+  TasksList({super.key, required this.paramTasks});
 
   @override
   State<TasksList> createState() => _TasksListState();
@@ -23,6 +23,7 @@ class _TasksListState extends State<TasksList> {
     // TODO: implement initState
     super.initState();
     isLoading = false;
+    tasks = widget.paramTasks.toList();
     _fetch();
   }
 
@@ -36,9 +37,9 @@ class _TasksListState extends State<TasksList> {
       final data = jsonDecode(response.body) as Map;
       final result = data['Todos'] as List;
       setState(() {
-        tasks = result;
+        tasks.clear();
+        tasks.addAll(result.toList());
       });
-      print(data);
     }
     setState(() {
       isLoading = false;
@@ -46,23 +47,29 @@ class _TasksListState extends State<TasksList> {
   }
 
   void updateTask(Map item) {
-    showModalBottomSheet(
+    Future<void> modalFuture = showModalBottomSheet<void>(
         context: context,
         isScrollControlled: true,
         builder: (context) => SingleChildScrollView(
             child: Container(
                 padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: AddTaskScreen(todo: item, callback: () => {}))));
+                child: AddTaskScreen(todo: item))));
+    modalFuture.whenComplete(() async {
+      print(
+          "heloooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
+      await _fetch();
+    });
   }
 
   Future<void> delecteById(String id) async {
     String request = 'http://14.161.18.75:7030/todos/$id';
     final response = await http.delete(Uri.parse(request));
-    if (response.body == 200) {
-      final filter = tasks.where((element) => element('_id') != id).toList();
+    if (response.statusCode == 200) {
+      final filter = tasks.where((element) => element['_id'] != id).toList();
       setState(() {
-        tasks = filter;
+        tasks.clear();
+        tasks.addAll(filter.toList());
       });
     }
   }
